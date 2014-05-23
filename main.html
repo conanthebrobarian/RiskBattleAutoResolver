@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>Risk Battle Auto-Resolver</title>
+
+<script>
+
+var att_array = new Array(0, 0, 0);
+var def_array = new Array(0, 0);
+var att_armies = 0;
+var def_armies = 0;
+
+function sleep(milliseconds) {
+
+ var start = new Date().getTime();
+ for (var i = 0; i < 1e7; i++) {
+  if ((new Date().getTime() - start) > milliseconds){
+   break;
+  }
+ }
+}
+
+function sort_array(unsort_array){
+
+ var tmp_val;
+ var sorted = 1;
+
+ while(sorted != 0){
+  sorted = 0;
+  for(var i=0; i<unsort_array.length; i++){
+   if(unsort_array[i] < unsort_array[i+1]){
+    tmp_val = unsort_array[i+1];
+    unsort_array[i+1] = unsort_array[i];
+    unsort_array[i] = tmp_val;
+    sorted = 1;
+   }
+  }
+ }
+}
+
+function resolve_battle(){
+
+ var tmp_val;
+ var sorted = 0;
+ var html_area = document.getElementById("res_area");
+
+ //html_area.innerHTML = "";
+
+ att_armies = document.getElementById("att_army_num").value;
+ def_armies = document.getElementById("def_army_num").value;
+
+ while(att_armies > 1 && def_armies > 0){
+
+  for(var i = 0; i < Math.min(att_array.length, att_armies-1); i++){
+   att_array[i] = Math.floor(Math.random()*6)+1;
+  }
+
+  for(var i = 0; i < Math.min(def_array.length, def_armies); i++){
+   def_array[i] = Math.floor(Math.random()*6)+1;
+  }
+
+  //html_area.innerHTML += String(att_array[0]) + "," + String(att_array[1]) + "," + String(att_array[2]) + "<br>";
+  //html_area.innerHTML += String(def_array[0]) + "," + String(def_array[1]) + "<br>";
+
+  sort_array(att_array);
+  sort_array(def_array);
+
+  html_area.innerHTML += String(att_array[0]) + "," + String(att_array[1]) + "," + String(att_array[2]) + "<br>";
+  html_area.innerHTML += String(def_array[0]) + "," + String(def_array[1]) + "<br>";
+
+  for(var i = 0; i < Math.min(def_array.length, def_armies, att_armies-1); i++){
+   if(def_array[i] >= att_array[i]){
+    att_armies -= 1;
+   }
+   else{
+    def_armies -= 1;
+   }
+  }
+
+  html_area.innerHTML += "Attacking armies = " + String(att_armies) + "<br>Defending armies = " + String(def_armies) + "<br><br>";
+ }
+ html_area.innerHTML += "Attacking armies = " + String(att_armies) + "<br>Defending armies = " + String(def_armies) + "<br>";
+}
+
+function fight_once(){
+
+ var tmp_val;
+ var sorted = 0;
+ var html_area = document.getElementById("res_area");
+ var att_elem = document.getElementById("att_army_num");
+ var def_elem = document.getElementById("def_army_num");
+
+ //html_area.innerHTML = "";
+
+ att_armies = document.getElementById("att_army_num").value;
+ def_armies = document.getElementById("def_army_num").value;
+
+ while(att_armies > 1 && def_armies > 0){
+
+  for(var i = 0; i < Math.min(att_array.length, att_armies-1); i++){
+   att_array[i] = Math.floor(Math.random()*6)+1;
+  }
+
+  for(var i = 0; i < Math.min(def_array.length, def_armies); i++){
+   def_array[i] = Math.floor(Math.random()*6)+1;
+  }
+
+  //html_area.innerHTML += String(att_array[0]) + "," + String(att_array[1]) + "," + String(att_array[2]) + "<br>";
+  //html_area.innerHTML += String(def_array[0]) + "," + String(def_array[1]) + "<br>";
+
+  sort_array(att_array);
+  sort_array(def_array);
+
+  html_area.innerHTML += String(att_array[0]) + "," + String(att_array[1]) + "," + String(att_array[2]) + "<br>";
+  html_area.innerHTML += String(def_array[0]) + "," + String(def_array[1]) + "<br>";
+
+  for(var i = 0; i < Math.min(def_array.length, def_armies, att_armies-1); i++){
+   if(def_array[i] >= att_array[i]){
+    att_elem.value -= 1;
+   }
+   else{
+    def_elem.value -= 1;
+   }
+  }
+
+  html_area.innerHTML += "Attacking armies = " + String(att_elem.value) + "<br>Defending armies = " + String(def_elem.value) + "<br><br>";
+  break;
+ }
+ //html_area.innerHTML += "Attacking armies = " + String(att_elem.value) + "<br>Defending armies = " + String(def_elem.value) + "<br>";
+}
+
+function clear_elem(){
+ document.getElementById("res_area").innerHTML = "";
+}
+
+</script>
+
+</head>
+<body>
+Attacking armies <input type="text" id="att_army_num"></input>
+<br>
+Defending armies <input type="text" id="def_army_num"></input>
+<br>
+<input type="submit" onClick=resolve_battle() value="Auto Resolve"></input>
+<nbsp><nbsp>
+<input type="submit" onClick=fight_once() value="Fight"></input>
+<nbsp><nbsp>
+<input type="submit" onClick=clear_elem() value="Clear"></input>
+<br>
+<div id="res_area">
+<!-- style="overflow-y:scroll; height:300px; width: 200px" -->
+</div>
+</body>
+</html>
